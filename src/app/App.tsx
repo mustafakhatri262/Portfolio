@@ -5,7 +5,7 @@ import profilePhoto from "../../neww.png";
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 
-const NAV_ITEMS = ["Work", "About", "Skills", "Contact"];
+const NAV_ITEMS = ["Work", "About", "Skills", "Leadership", "Contact"];
 
 const NAME = "Muhammad Mustafa";
 const TITLE = "Software Engineer | AI/ML Engineer | Web Developer";
@@ -74,6 +74,55 @@ const HIGHLIGHTS = [
   { num: "4+", label: "Awards & certs" },
 ];
 
+const CODE_LINES = [
+  "const name = 'Muhammad Mustafa';",
+  "const stack = ['React', 'TypeScript', 'Node'];",
+  "const focus = ['AI/ML', 'Web', 'APIs'];",
+  "function buildPortfolio() {",
+  "  return 'code meets intelligence';",
+  "}",
+  "while (true) { learn(); build(); ship(); }",
+  "git add . && git commit -m 'ship';",
+  "fast-NUCES -> Procom -> ACM",
+];
+
+const LEADERSHIP_ITEMS = [
+  {
+    title: "Co-Head, Extended Procom (Media Production)",
+    meta: "FAST-NUCES | 2025 - 2026",
+    description:
+      "Led a 10+ member team in multimedia content creation and supervised design, animation, and video production for a national-level event.",
+  },
+  {
+    title: "Deputy Organizer, AI Competitions (Vibe Coding)",
+    meta: "Procom | 2026",
+    description:
+      "Organized AI-focused coding competitions for 200+ participants and managed logistics, problem design, judging criteria, and coordination.",
+  },
+  {
+    title: "Coordinator, ACM Animation Team",
+    meta: "ACM FAST Chapter | 2024 - 2025",
+    description:
+      "Produced and edited 15+ promotional videos for university events, workshops, and campaigns under tight deadlines.",
+  },
+];
+
+const ACHIEVEMENTS = [
+  "Star Performer Award - ACM FAST Chapter (Technical Contribution & Leadership)",
+  "Shields Award - Procom FAST (Event Management & Team Coordination)",
+  "Star Performer Award - Procom FAST (Leadership & Technical Excellence)",
+  "Multiple Competition Certificates - Procom, DevDay, Coders Cup (2024-2026)",
+];
+
+const RELEVANT_DETAILS = [
+  { label: "Education", value: "BS Computer Science, FAST-NUCES Karachi" },
+  { label: "CGPA", value: "3.05 / 4.0" },
+  { label: "Experience", value: "Teaching Assistant at FAST-NUCES" },
+  { label: "Languages", value: "English (Fluent), Urdu (Native)" },
+  { label: "Email", value: EMAIL },
+  { label: "Phone", value: PHONE },
+];
+
 // ─── Cursor Follower ─────────────────────────────────────────────────────────
 
 function CursorFollower() {
@@ -133,29 +182,97 @@ function CursorFollower() {
 
 // ─── Animated Text ───────────────────────────────────────────────────────────
 
-function SplitText({ text, className, delay = 0 }: { text: string; className?: string; delay?: number }) {
-  const ref = useRef(null);
+function TypingText({
+  text,
+  className = "",
+  delay = 0,
+  speed = 45,
+}: {
+  text: string;
+  className?: string;
+  delay?: number;
+  speed?: number;
+}) {
+  const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, margin: "-10% 0px" });
+  const [visibleCount, setVisibleCount] = useState(0);
+  const timeoutRef = useRef<number | null>(null);
+  const intervalRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!inView) return;
+
+    setVisibleCount(0);
+    if (timeoutRef.current !== null) {
+      window.clearTimeout(timeoutRef.current);
+    }
+    if (intervalRef.current !== null) {
+      window.clearInterval(intervalRef.current);
+    }
+
+    timeoutRef.current = window.setTimeout(() => {
+      let index = 0;
+      intervalRef.current = window.setInterval(() => {
+        index += 1;
+        setVisibleCount(index);
+
+        if (index >= text.length) {
+          if (intervalRef.current !== null) {
+            window.clearInterval(intervalRef.current);
+            intervalRef.current = null;
+          }
+        }
+      }, speed);
+    }, delay * 1000);
+
+    return () => window.clearTimeout(startTimer);
+  }, [delay, inView, speed, text]);
 
   return (
-    <span ref={ref} className={`inline-block overflow-hidden ${className ?? ""}`}>
-      {text.split("").map((char, i) => (
-        <motion.span
-          key={i}
-          className="inline-block"
-          initial={{ y: "110%", opacity: 0 }}
-          animate={inView ? { y: "0%", opacity: 1 } : {}}
-          transition={{
-            duration: 0.65,
-            delay: delay + i * 0.028,
-            ease: [0.16, 1, 0.3, 1],
-          }}
-          style={{ whiteSpace: char === " " ? "pre" : "normal" }}
-        >
-          {char === " " ? " " : char}
-        </motion.span>
-      ))}
+    <span ref={ref} className={`inline-flex items-center whitespace-pre ${className}`}>
+      <span>{text.slice(0, visibleCount)}</span>
+      <span className={`ml-1 inline-block text-accent animate-pulse ${visibleCount >= text.length ? "opacity-0" : "opacity-100"}`}>
+        ▍
+      </span>
     </span>
+  );
+}
+
+function CodeBackdrop() {
+  const columns = [
+    CODE_LINES,
+    [...CODE_LINES.slice(3), ...CODE_LINES.slice(0, 3)],
+    [...CODE_LINES.slice(5), ...CODE_LINES.slice(0, 5)],
+  ];
+
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0" aria-hidden="true">
+      <div className="absolute inset-0 bg-[#050505]/80" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(200,255,0,0.08),transparent_42%)]" />
+      <div className="absolute inset-0 grid grid-cols-1 md:grid-cols-3 gap-8 px-6 md:px-12 py-28 opacity-40">
+        {columns.map((lines, columnIndex) => (
+          <div key={columnIndex} className="relative overflow-hidden h-full">
+            <motion.div
+              className="flex flex-col gap-3"
+              animate={{ y: [0, -50 + "%"] }}
+              transition={{ duration: 24 + columnIndex * 5, repeat: Infinity, ease: "linear" }}
+            >
+              {[...lines, ...lines].map((line, lineIndex) => (
+                <div
+                  key={`${columnIndex}-${lineIndex}`}
+                  className="rounded-xl border border-border/30 bg-card/20 px-4 py-3 backdrop-blur-[1px]"
+                >
+                  <span className="font-['Geist_Mono'] text-[10px] md:text-xs leading-5 text-accent/70">
+                    {line}
+                  </span>
+                </div>
+              ))}
+            </motion.div>
+          </div>
+        ))}
+      </div>
+      <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent" />
+    </div>
   );
 }
 
@@ -309,15 +426,17 @@ function Hero() {
         }}
       />
 
+      <CodeBackdrop />
+
       {/* Ambient glow */}
       <motion.div
-        className="absolute top-1/3 left-1/4 w-96 h-96 rounded-full pointer-events-none"
+        className="absolute top-1/3 left-1/4 w-96 h-96 rounded-full pointer-events-none z-0"
         style={{ background: "radial-gradient(circle, rgba(200,255,0,0.06) 0%, transparent 70%)" }}
         animate={{ scale: [1, 1.2, 1], opacity: [0.6, 1, 0.6] }}
         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
       />
 
-      <motion.div style={{ y, opacity }}>
+      <motion.div style={{ y, opacity }} className="relative z-10">
         {/* Label */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -333,11 +452,11 @@ function Hero() {
 
         {/* Main headline */}
         <h1 className="font-['Unbounded'] font-black leading-[0.95] tracking-tight overflow-hidden">
-          <div className="whitespace-nowrap text-[clamp(2.75rem,8.5vw,9rem)] text-foreground">
-            <SplitText text="MUHAMMAD" delay={0.5} />
+          <div className="whitespace-nowrap text-[clamp(2.6rem,8vw,8.6rem)] text-foreground">
+            <TypingText text="MUHAMMAD" delay={0.45} speed={58} />
           </div>
-          <div className="whitespace-nowrap text-[clamp(2.75rem,8.5vw,9rem)] text-foreground -mt-2">
-            <SplitText text="MUSTAFA" delay={0.6} className="text-accent" />
+          <div className="whitespace-nowrap text-[clamp(2.6rem,8vw,8.6rem)] text-foreground -mt-2">
+            <TypingText text="MUSTAFA" delay={1.35} speed={58} className="text-accent" />
           </div>
         </h1>
 
@@ -444,9 +563,9 @@ function About() {
               transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
               className="font-['Unbounded'] text-4xl md:text-5xl font-black text-foreground leading-tight"
             >
-              Code meets
+              <TypingText text="Code meets" delay={0.2} speed={55} />
               <br />
-              <span className="text-accent">intelligence.</span>
+              <TypingText text="intelligence." delay={0.95} speed={55} className="text-accent" />
             </motion.h2>
           </div>
 
@@ -569,7 +688,7 @@ function Work() {
             <div className="overflow-hidden mt-2">
               <Reveal>
                 <h2 className="font-['Unbounded'] text-5xl md:text-7xl font-black text-foreground leading-none">
-                  Projects
+                  <TypingText text="Projects" delay={0.15} speed={58} />
                 </h2>
               </Reveal>
             </div>
@@ -612,7 +731,7 @@ function Skills() {
             <div className="overflow-hidden mt-2">
               <Reveal>
                 <h2 className="font-['Unbounded'] text-5xl md:text-6xl font-black text-foreground leading-none">
-                  Skills
+                  <TypingText text="Skills" delay={0.15} speed={58} />
                 </h2>
               </Reveal>
             </div>
@@ -668,6 +787,114 @@ function Skills() {
   );
 }
 
+// ─── Leadership & Achievements ──────────────────────────────────────────────
+
+function Leadership() {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-10% 0px" });
+
+  return (
+    <section id="leadership" className="py-32 px-6 md:px-12" ref={ref}>
+      <div className="max-w-6xl mx-auto">
+        <div className="flex items-end justify-between mb-16">
+          <div>
+            <Reveal>
+              <span className="font-['Geist_Mono'] text-xs text-accent tracking-[0.25em] uppercase">
+                CV Details
+              </span>
+            </Reveal>
+            <div className="overflow-hidden mt-2">
+              <Reveal>
+                <h2 className="font-['Unbounded'] text-4xl md:text-6xl font-black text-foreground leading-none">
+                  <TypingText text="Leadership & Achievements" delay={0.15} speed={45} />
+                </h2>
+              </Reveal>
+            </div>
+          </div>
+          <Reveal>
+            <span className="font-['Geist_Mono'] text-xs text-muted-foreground hidden md:block">
+              FAST-NUCES | ACM | PROCOM
+            </span>
+          </Reveal>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="space-y-4">
+            {LEADERSHIP_ITEMS.map((item, index) => (
+              <motion.div
+                key={item.title}
+                initial={{ opacity: 0, y: 24 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.6, delay: 0.12 + index * 0.1, ease: [0.16, 1, 0.3, 1] }}
+                className="border border-border bg-card p-6"
+              >
+                <div className="flex flex-col gap-1">
+                  <span className="font-['Geist_Mono'] text-[10px] tracking-[0.25em] uppercase text-accent">
+                    Role {index + 1}
+                  </span>
+                  <h3 className="font-['Unbounded'] text-xl md:text-2xl font-black text-foreground leading-tight">
+                    {item.title}
+                  </h3>
+                  <span className="font-['Geist_Mono'] text-xs text-muted-foreground tracking-widest uppercase">
+                    {item.meta}
+                  </span>
+                </div>
+                <p className="font-['Outfit'] text-sm text-muted-foreground leading-relaxed mt-4">
+                  {item.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="space-y-6">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+              className="border border-border bg-card p-6"
+            >
+              <span className="font-['Geist_Mono'] text-xs text-accent tracking-[0.25em] uppercase">
+                Achievements
+              </span>
+              <ul className="mt-5 space-y-3">
+                {ACHIEVEMENTS.map((item) => (
+                  <li key={item} className="flex gap-3 text-sm text-muted-foreground leading-relaxed">
+                    <span className="mt-1.5 block h-2 w-2 rounded-full bg-accent shrink-0" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              className="border border-border bg-card p-6"
+            >
+              <span className="font-['Geist_Mono'] text-xs text-accent tracking-[0.25em] uppercase">
+                Relevant Details
+              </span>
+              <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {RELEVANT_DETAILS.map((detail) => (
+                  <div key={detail.label} className="border border-border/70 p-4">
+                    <span className="block font-['Geist_Mono'] text-[10px] tracking-[0.2em] uppercase text-muted-foreground">
+                      {detail.label}
+                    </span>
+                    <span className="block font-['Outfit'] text-sm text-foreground mt-2 leading-relaxed">
+                      {detail.value}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ─── Contact ─────────────────────────────────────────────────────────────────
 
 function Contact() {
@@ -691,9 +918,9 @@ function Contact() {
             transition={{ duration: 0.9, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
             className="font-['Unbounded'] font-black leading-none text-[clamp(2rem,7vw,6rem)] text-foreground"
           >
-            LET&apos;S BUILD
+            <TypingText text="LET'S BUILD" delay={0.2} speed={55} />
             <br />
-            <span className="text-accent">SOMETHING.</span>
+            <TypingText text="SOMETHING." delay={1.0} speed={55} className="text-accent" />
           </motion.h2>
         </div>
 
@@ -783,6 +1010,7 @@ export default function App() {
       <About />
       <Work />
       <Skills />
+      <Leadership />
       <Contact />
       <Footer />
     </div>

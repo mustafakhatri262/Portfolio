@@ -116,69 +116,11 @@ const ACHIEVEMENTS = [
 
 const RELEVANT_DETAILS = [
   { label: "Education", value: "BS Computer Science, FAST-NUCES Karachi" },
-  { label: "CGPA", value: "3.05 / 4.0" },
   { label: "Experience", value: "Teaching Assistant at FAST-NUCES" },
   { label: "Languages", value: "English (Fluent), Urdu (Native)" },
   { label: "Email", value: EMAIL },
   { label: "Phone", value: PHONE },
 ];
-
-// ─── Cursor Follower ─────────────────────────────────────────────────────────
-
-function CursorFollower() {
-  const [pos, setPos] = useState({ x: -100, y: -100 });
-  const [isHovering, setIsHovering] = useState(false);
-  const raf = useRef<number>(0);
-  const target = useRef({ x: -100, y: -100 });
-  const current = useRef({ x: -100, y: -100 });
-
-  useEffect(() => {
-    const onMove = (e: MouseEvent) => {
-      target.current = { x: e.clientX, y: e.clientY };
-    };
-    const onHoverIn = (e: MouseEvent) => {
-      if ((e.target as Element).closest("a, button, [data-magnetic]")) setIsHovering(true);
-    };
-    const onHoverOut = (e: MouseEvent) => {
-      if ((e.target as Element).closest("a, button, [data-magnetic]")) setIsHovering(false);
-    };
-
-    const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
-    const tick = () => {
-      current.current.x = lerp(current.current.x, target.current.x, 0.12);
-      current.current.y = lerp(current.current.y, target.current.y, 0.12);
-      setPos({ x: current.current.x, y: current.current.y });
-      raf.current = requestAnimationFrame(tick);
-    };
-    raf.current = requestAnimationFrame(tick);
-
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseover", onHoverIn);
-    window.addEventListener("mouseout", onHoverOut);
-    return () => {
-      cancelAnimationFrame(raf.current);
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("mouseover", onHoverIn);
-      window.removeEventListener("mouseout", onHoverOut);
-    };
-  }, []);
-
-  return (
-    <div
-      className="fixed pointer-events-none z-[999] mix-blend-difference"
-      style={{
-        left: pos.x,
-        top: pos.y,
-        transform: "translate(-50%, -50%)",
-        width: isHovering ? 48 : 12,
-        height: isHovering ? 48 : 12,
-        borderRadius: "50%",
-        backgroundColor: "#C8FF00",
-        transition: "width 0.3s ease, height 0.3s ease",
-      }}
-    />
-  );
-}
 
 // ─── Animated Text ───────────────────────────────────────────────────────────
 
@@ -805,8 +747,10 @@ function Leadership() {
             </Reveal>
             <div className="overflow-hidden mt-2">
               <Reveal>
-                <h2 className="font-['Unbounded'] text-4xl md:text-6xl font-black text-foreground leading-none">
-                  <TypingText text="Leadership & Achievements" delay={0.15} speed={45} />
+                <h2 className="font-['Unbounded'] text-4xl md:text-6xl font-black text-foreground leading-tight">
+                  <TypingText text="Leadership" delay={0.15} speed={45} />
+                  <br />
+                  <TypingText text="& Achievements" delay={0.65} speed={45} className="text-accent" />
                 </h2>
               </Reveal>
             </div>
@@ -1004,7 +948,6 @@ function Footer() {
 export default function App() {
   return (
     <div className="bg-background text-foreground min-h-screen overflow-x-hidden" style={{ fontFamily: "'Outfit', sans-serif" }}>
-      <CursorFollower />
       <Nav />
       <Hero />
       <About />

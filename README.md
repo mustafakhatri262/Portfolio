@@ -29,5 +29,5 @@
   ## Assets
 
   - `Muhammad_Mustafa_CV_U.pdf` - source CV used for the portfolio content
-  - `1773051920095.jpg` - profile photo used in the About section
+  - `neww.png` - profile photo used in the About section
   

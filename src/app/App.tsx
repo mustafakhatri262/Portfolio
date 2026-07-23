@@ -13,7 +13,8 @@ const EMAIL = "work.mustafa262@gmail.com";
 const PHONE = "+92 316 3990033";
 const LOCATION = "Karachi, Pakistan";
 const LINKEDIN = "https://linkedin.com/in/muhammad-mustafa-83b436383";
-const RESUME = "/Muhammad_Mustafa_CV_U.pdf";
+const GITHUB = "https://github.com/mustafakhatri262";
+const RESUME = "/Muhammad_Mustafa_Full_Stack_Developer.pdf";
 
 const PROJECTS = [
   {
@@ -891,6 +892,15 @@ function Contact() {
           >
             LINKEDIN
           </a>
+          <a
+            href={GITHUB}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-['Unbounded'] text-sm font-bold text-foreground border border-border px-10 py-4 hover:border-accent hover:text-accent transition-colors tracking-widest w-full sm:w-auto"
+            data-magnetic
+          >
+            GITHUB
+          </a>
         </Reveal>
 
         {/* Availability badge */}
@@ -927,6 +937,7 @@ function Footer() {
           {[
             { label: "Resume", href: RESUME },
             { label: "LinkedIn", href: LINKEDIN },
+            { label: "GitHub", href: GITHUB },
             { label: "Email", href: `mailto:${EMAIL}` },
           ].map((link) => (
             <a
